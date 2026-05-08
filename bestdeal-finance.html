@@ -1,0 +1,1538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Best Deal Finance — Best Deal. Better Future.</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8C97A;
+    --gold-pale: #F5E6C0;
+    --navy: #0A1628;
+    --navy-mid: #112240;
+    --navy-light: #1A3461;
+    --white: #F8F6F0;
+    --gray: #8A96A8;
+    --accent: #2563EB;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom Cursor */
+  .cursor {
+    position: fixed;
+    width: 12px; height: 12px;
+    background: var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.1s ease;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 36px; height: 36px;
+    border: 1.5px solid var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transition: all 0.15s ease;
+    opacity: 0.6;
+  }
+
+  /* Animated Background */
+  .bg-mesh {
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 20%, rgba(201,168,76,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 80% 80%, rgba(26,52,97,0.4) 0%, transparent 60%),
+      radial-gradient(ellipse 100% 100% at 50% 50%, var(--navy) 0%, #060D1A 100%);
+    z-index: 0;
+  }
+
+  /* Gold particles */
+  .particles {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .particle {
+    position: absolute;
+    width: 2px; height: 2px;
+    background: var(--gold);
+    border-radius: 50%;
+    animation: float linear infinite;
+    opacity: 0;
+  }
+  @keyframes float {
+    0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.6; }
+    90% { opacity: 0.3; }
+    100% { transform: translateY(-10vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
+    padding: 0 5%;
+    height: 75px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(10,22,40,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(201,168,76,0.15);
+    transition: all 0.3s ease;
+  }
+  nav.scrolled {
+    height: 65px;
+    background: rgba(10,22,40,0.97);
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+  .nav-logo span { color: var(--gold); }
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+  .nav-links a {
+    color: rgba(248,246,240,0.7);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.3s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: 0; right: 0;
+    height: 1px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+  }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-links a:hover::after { transform: scaleX(1); }
+  .nav-cta {
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: var(--navy) !important;
+    padding: 10px 24px;
+    border-radius: 4px;
+    font-weight: 600 !important;
+    transition: all 0.3s ease !important;
+  }
+  .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(201,168,76,0.4); }
+  .nav-cta::after { display: none !important; }
+
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 5px;
+  }
+  .hamburger span {
+    width: 25px; height: 2px;
+    background: var(--gold);
+    transition: all 0.3s ease;
+  }
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    top: 75px; left: 0; right: 0;
+    background: rgba(10,22,40,0.98);
+    padding: 2rem;
+    border-bottom: 1px solid rgba(201,168,76,0.2);
+    z-index: 999;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a {
+    color: var(--white);
+    text-decoration: none;
+    font-size: 1.1rem;
+    letter-spacing: 0.05em;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(201,168,76,0.1);
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 5% 80px;
+    z-index: 1;
+  }
+  .hero-content { max-width: 900px; }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(201,168,76,0.12);
+    border: 1px solid rgba(201,168,76,0.3);
+    color: var(--gold-light);
+    padding: 8px 20px;
+    border-radius: 50px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    animation: fadeInDown 0.8s ease forwards;
+  }
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.5); }
+  }
+
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3rem, 8vw, 7rem);
+    font-weight: 300;
+    line-height: 1.05;
+    margin-bottom: 1.5rem;
+    animation: fadeInUp 0.9s 0.2s ease both;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--gold);
+    font-weight: 400;
+  }
+  .hero h1 strong {
+    display: block;
+    font-weight: 700;
+    font-size: 0.8em;
+    letter-spacing: 0.02em;
+  }
+
+  .hero-sub {
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    color: rgba(248,246,240,0.6);
+    max-width: 560px;
+    margin: 0 auto 3rem;
+    line-height: 1.7;
+    font-weight: 300;
+    animation: fadeInUp 0.9s 0.4s ease both;
+  }
+
+  .hero-btns {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    animation: fadeInUp 0.9s 0.6s ease both;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+    color: var(--navy);
+    padding: 16px 36px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.2);
+    transform: translateX(-100%);
+    transition: transform 0.4s ease;
+  }
+  .btn-primary:hover::before { transform: translateX(0); }
+  .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(201,168,76,0.4); }
+
+  .btn-outline {
+    border: 1px solid rgba(201,168,76,0.5);
+    color: var(--gold-light);
+    padding: 16px 36px;
+    border-radius: 4px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    background: rgba(201,168,76,0.05);
+  }
+  .btn-outline:hover {
+    background: rgba(201,168,76,0.12);
+    border-color: var(--gold);
+    transform: translateY(-3px);
+  }
+
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-top: 5rem;
+    padding-top: 3rem;
+    border-top: 1px solid rgba(201,168,76,0.15);
+    flex-wrap: wrap;
+    animation: fadeInUp 0.9s 0.8s ease both;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 0.75rem;
+    color: var(--gray);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+
+  /* Decorative line */
+  .hero-line {
+    position: absolute;
+    bottom: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    animation: fadeIn 1s 1.2s ease both;
+  }
+  .hero-line span { font-size: 0.7rem; color: var(--gray); letter-spacing: 0.15em; text-transform: uppercase; }
+  .hero-line-bar {
+    width: 1px; height: 50px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: lineGrow 1.5s 1.5s ease both;
+    transform-origin: top;
+    transform: scaleY(0);
+  }
+  @keyframes lineGrow { to { transform: scaleY(1); } }
+
+  /* MARQUEE TICKER */
+  .ticker {
+    background: linear-gradient(135deg, rgba(201,168,76,0.15), rgba(201,168,76,0.05));
+    border-top: 1px solid rgba(201,168,76,0.2);
+    border-bottom: 1px solid rgba(201,168,76,0.2);
+    padding: 14px 0;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+  }
+  .ticker-track {
+    display: flex;
+    gap: 4rem;
+    animation: ticker 25s linear infinite;
+    white-space: nowrap;
+  }
+  .ticker-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    font-weight: 500;
+  }
+  .ticker-dot { width: 4px; height: 4px; background: var(--gold); border-radius: 50%; }
+  @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+  /* SECTION COMMONS */
+  section { position: relative; z-index: 1; }
+  .section-pad { padding: 100px 5%; }
+  .section-header { text-align: center; margin-bottom: 5rem; }
+  .section-tag {
+    display: inline-block;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+    font-weight: 500;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.2rem, 5vw, 4rem);
+    font-weight: 300;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+  }
+  .section-title em { font-style: italic; color: var(--gold); }
+  .section-desc {
+    font-size: 1rem;
+    color: var(--gray);
+    max-width: 520px;
+    margin: 0 auto;
+    line-height: 1.8;
+    font-weight: 300;
+  }
+
+  /* SERVICES */
+  .services { background: linear-gradient(180deg, var(--navy) 0%, #070F1F 100%); }
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5px;
+    background: rgba(201,168,76,0.15);
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .service-card {
+    background: var(--navy);
+    padding: 3rem 2.5rem;
+    position: relative;
+    transition: all 0.4s ease;
+    overflow: hidden;
+  }
+  .service-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(201,168,76,0.08), transparent);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  .service-card:hover::before { opacity: 1; }
+  .service-card:hover { background: #0D1E38; }
+
+  .service-icon {
+    width: 60px; height: 60px;
+    background: rgba(201,168,76,0.1);
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    margin-bottom: 1.8rem;
+    transition: all 0.4s ease;
+  }
+  .service-card:hover .service-icon {
+    background: rgba(201,168,76,0.2);
+    border-color: var(--gold);
+    transform: translateY(-4px);
+  }
+  .service-tag {
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+  }
+  .service-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+  }
+  .service-desc {
+    font-size: 0.9rem;
+    color: var(--gray);
+    line-height: 1.8;
+    margin-bottom: 1.8rem;
+    font-weight: 300;
+  }
+  .service-features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .service-features li {
+    font-size: 0.82rem;
+    color: rgba(248,246,240,0.6);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .service-features li::before {
+    content: '';
+    width: 14px; height: 1px;
+    background: var(--gold);
+    flex-shrink: 0;
+  }
+  .service-arrow {
+    position: absolute;
+    bottom: 2.5rem; right: 2.5rem;
+    width: 40px; height: 40px;
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gold);
+    font-size: 1rem;
+    transition: all 0.4s ease;
+    opacity: 0;
+  }
+  .service-card:hover .service-arrow { opacity: 1; transform: translateX(4px); }
+
+  /* WHY US */
+  .why-us {
+    background: linear-gradient(135deg, #070F1F 0%, var(--navy) 100%);
+  }
+  .why-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: center;
+  }
+  .why-left .section-header { text-align: left; margin-bottom: 3rem; }
+  .why-list { display: flex; flex-direction: column; gap: 1.5rem; }
+  .why-item {
+    display: flex;
+    gap: 1.2rem;
+    align-items: flex-start;
+    padding: 1.5rem;
+    border: 1px solid rgba(201,168,76,0.1);
+    border-radius: 8px;
+    background: rgba(201,168,76,0.03);
+    transition: all 0.3s ease;
+  }
+  .why-item:hover {
+    border-color: rgba(201,168,76,0.3);
+    background: rgba(201,168,76,0.07);
+    transform: translateX(6px);
+  }
+  .why-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    color: rgba(201,168,76,0.3);
+    font-weight: 700;
+    line-height: 1;
+    flex-shrink: 0;
+    min-width: 40px;
+  }
+  .why-text h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+    color: var(--white);
+  }
+  .why-text p { font-size: 0.85rem; color: var(--gray); line-height: 1.7; font-weight: 300; }
+
+  .why-right { position: relative; }
+  .why-card-stack { position: relative; height: 480px; }
+  .why-card-back {
+    position: absolute;
+    top: 30px; left: 30px; right: -15px; bottom: -15px;
+    background: rgba(201,168,76,0.08);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 16px;
+  }
+  .why-card-main {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(145deg, var(--navy-mid), #0D1E38);
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 16px;
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .why-card-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--gold);
+  }
+  .why-big-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 5rem;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .why-card-label { font-size: 0.85rem; color: var(--gray); margin-top: 0.5rem; }
+  .why-card-bottom { display: flex; flex-direction: column; gap: 1rem; }
+  .why-card-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: rgba(201,168,76,0.06);
+    border-radius: 8px;
+    border: 1px solid rgba(201,168,76,0.1);
+  }
+  .why-card-row span:first-child { font-size: 0.78rem; color: var(--gray); text-transform: uppercase; letter-spacing: 0.08em; }
+  .why-card-row span:last-child { font-size: 0.9rem; color: var(--gold-light); font-weight: 600; }
+
+  /* PROCESS */
+  .process { background: var(--navy); }
+  .process-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    position: relative;
+  }
+  .process-steps::before {
+    content: '';
+    position: absolute;
+    top: 40px; left: 12.5%; right: 12.5%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+    z-index: 0;
+  }
+  .process-step {
+    text-align: center;
+    padding: 0 1.5rem;
+    position: relative;
+    z-index: 1;
+  }
+  .step-num {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    background: var(--navy);
+    border: 1px solid rgba(201,168,76,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 2rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--gold);
+    position: relative;
+    transition: all 0.3s ease;
+  }
+  .process-step:hover .step-num {
+    background: rgba(201,168,76,0.1);
+    border-color: var(--gold);
+    transform: scale(1.1);
+  }
+  .step-title { font-size: 1rem; font-weight: 600; margin-bottom: 0.7rem; }
+  .step-desc { font-size: 0.82rem; color: var(--gray); line-height: 1.7; font-weight: 300; }
+
+  /* ELIGIBILITY */
+  .eligibility {
+    background: linear-gradient(180deg, #070F1F 0%, var(--navy) 100%);
+  }
+  .elig-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+  }
+  .elig-card {
+    padding: 2.5rem 2rem;
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: 10px;
+    background: rgba(201,168,76,0.03);
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+  .elig-card:hover {
+    border-color: rgba(201,168,76,0.4);
+    background: rgba(201,168,76,0.08);
+    transform: translateY(-6px);
+  }
+  .elig-icon { font-size: 2rem; margin-bottom: 1rem; }
+  .elig-title { font-weight: 600; margin-bottom: 0.5rem; font-size: 0.95rem; }
+  .elig-val { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: var(--gold); font-weight: 600; }
+
+  /* CONTACT */
+  .contact {
+    background: linear-gradient(135deg, var(--navy) 0%, #060D1A 100%);
+  }
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 5rem;
+    align-items: center;
+  }
+  .contact-info h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.5rem;
+    font-weight: 300;
+    margin-bottom: 1.5rem;
+  }
+  .contact-info h3 em { font-style: italic; color: var(--gold); }
+  .contact-info p { color: var(--gray); line-height: 1.8; margin-bottom: 2.5rem; font-size: 0.95rem; font-weight: 300; }
+  .contact-details { display: flex; flex-direction: column; gap: 1.2rem; }
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.2rem 1.5rem;
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: 8px;
+    background: rgba(201,168,76,0.04);
+    transition: all 0.3s ease;
+  }
+  .contact-item:hover { border-color: rgba(201,168,76,0.35); background: rgba(201,168,76,0.08); }
+  .contact-icon {
+    width: 44px; height: 44px;
+    background: rgba(201,168,76,0.12);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+  .contact-item-text small { font-size: 0.7rem; color: var(--gray); letter-spacing: 0.08em; text-transform: uppercase; display: block; }
+  .contact-item-text strong { font-size: 0.95rem; color: var(--white); font-weight: 500; }
+
+  /* Form */
+  .contact-form {
+    background: rgba(201,168,76,0.04);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 16px;
+    padding: 3rem;
+  }
+  .form-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    color: var(--gold-light);
+  }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .form-group { margin-bottom: 1.2rem; }
+  .form-group label {
+    display: block;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 6px;
+    padding: 12px 16px;
+    color: var(--white);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    outline: none;
+  }
+  .form-group select option { background: var(--navy); }
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.06);
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.1);
+  }
+  .form-group textarea { height: 100px; resize: none; }
+  .form-submit {
+    width: 100%;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: var(--navy);
+    border: none;
+    padding: 16px;
+    border-radius: 6px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 0.5rem;
+  }
+  .form-submit:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(201,168,76,0.4); }
+
+  /* FOOTER */
+  footer {
+    background: #040A14;
+    padding: 4rem 5% 2rem;
+    border-top: 1px solid rgba(201,168,76,0.15);
+    position: relative;
+    z-index: 1;
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr;
+    gap: 4rem;
+    margin-bottom: 3rem;
+  }
+  .footer-brand-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  .footer-brand-name span { color: var(--gold); }
+  .footer-tagline {
+    font-size: 0.82rem;
+    color: var(--gray);
+    line-height: 1.8;
+    font-weight: 300;
+    max-width: 260px;
+  }
+  .footer-col h5 {
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 1.2rem;
+  }
+  .footer-links { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+  .footer-links a {
+    color: var(--gray);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: color 0.3s;
+    font-weight: 300;
+  }
+  .footer-links a:hover { color: var(--gold-light); }
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .footer-copy { font-size: 0.78rem; color: rgba(138,150,168,0.6); }
+  .footer-copy span { color: var(--gold); }
+
+  /* GOLD DIVIDER */
+  .gold-divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .gold-divider::before, .gold-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(201,168,76,0.4));
+  }
+  .gold-divider::after { background: linear-gradient(to left, transparent, rgba(201,168,76,0.4)); }
+  .gold-divider-gem { color: var(--gold); font-size: 0.6rem; }
+
+  /* ANIMATIONS */
+  @keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; } to { opacity: 1; }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-left {
+    opacity: 0;
+    transform: translateX(-40px);
+    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal-left.visible { opacity: 1; transform: translateX(0); }
+  .reveal-right {
+    opacity: 0;
+    transform: translateX(40px);
+    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+  /* RESPONSIVE */
+  @media (max-width: 1024px) {
+    .why-grid { grid-template-columns: 1fr; }
+    .why-right { display: none; }
+    .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .process-steps { grid-template-columns: repeat(2, 1fr); gap: 3rem; }
+    .process-steps::before { display: none; }
+  }
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    .section-pad { padding: 70px 5%; }
+    .why-grid { grid-template-columns: 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .process-steps { grid-template-columns: 1fr 1fr; }
+    .hero-stats { gap: 2rem; }
+    .contact-form { padding: 2rem; }
+  }
+  @media (max-width: 480px) {
+    .process-steps { grid-template-columns: 1fr; }
+    .hero-btns { flex-direction: column; align-items: center; }
+    .btn-primary, .btn-outline { width: 100%; text-align: center; }
+  }
+
+  /* WhatsApp Float */
+  .whatsapp-float {
+    position: fixed;
+    bottom: 30px; right: 30px;
+    width: 58px; height: 58px;
+    background: #25D366;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    z-index: 999;
+    box-shadow: 0 8px 25px rgba(37,211,102,0.4);
+    text-decoration: none;
+    animation: bounce 2s infinite;
+    transition: transform 0.3s ease;
+  }
+  .whatsapp-float:hover { transform: scale(1.1); }
+  @keyframes bounce {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+  .whatsapp-float:hover { animation: none; }
+</style>
+</head>
+<body>
+
+<!-- Cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- BG -->
+<div class="bg-mesh"></div>
+<div class="particles" id="particles"></div>
+
+<!-- WhatsApp Float -->
+<a href="https://wa.me/918796360803" class="whatsapp-float" target="_blank" title="Chat on WhatsApp">💬</a>
+
+<!-- NAV -->
+<nav id="navbar">
+  <div class="nav-logo">Best<span>Deal</span> Finance</div>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#why-us">Why Us</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#eligibility">Eligibility</a></li>
+    <li><a href="#contact" class="nav-cta">Get Loan</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#services" onclick="closeMobile()">Services</a>
+  <a href="#why-us" onclick="closeMobile()">Why Us</a>
+  <a href="#process" onclick="closeMobile()">Process</a>
+  <a href="#eligibility" onclick="closeMobile()">Eligibility</a>
+  <a href="#contact" onclick="closeMobile()">Get Loan →</a>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-content">
+    <div class="hero-badge">🏆 Trusted Loan Advisor — Pan India</div>
+    <h1>
+      Your <em>Financial</em>
+      <strong>Freedom Starts Here</strong>
+    </h1>
+    <p class="hero-sub">From personal emergencies to dream homes — Best Deal Finance delivers the right loan at the best rate, with speed and integrity.</p>
+    <div class="hero-btns">
+      <a href="#contact" class="btn-primary">Apply for Loan →</a>
+      <a href="#services" class="btn-outline">Explore Services</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num" data-count="1000">0</div>
+        <div class="stat-label">Happy Clients</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" data-count="5">0</div>
+        <div class="stat-label">Loan Products</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">24h</div>
+        <div class="stat-label">Fast Approval</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">0%</div>
+        <div class="stat-label">Hidden Charges</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-line">
+    <span>Scroll</span>
+    <div class="hero-line-bar"></div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track">
+    <div class="ticker-item"><span class="ticker-dot"></span> Personal Loan</div>
+    <div class="ticker-item"><span class="ticker-dot"></span> Home Loan</div>
+    <div class="ticker-item"><span class="ticker-dot"></span> Auto Loan</div>
+    <div class="ticker-item"><span class="ticker-dot"></span> Loan Against Property</div>
+    <div class="ticker-item"><span class="ticker-dot"></span> Overdraft Facility</div>
+    <div class="ticker-item"><span class="ticker-dot"></span> Fast Approval</div>
+    <div class="ticker-item"><span class="ticker-dot"></span> Low Interest Rates</div>
+    <div class="ticker-item"><span class="ticker-dot"></span> Pan India Service</div>
+    <div class="ticker-item"><span class="ticker-dot"></span> Personal Loan</div>
+    <div class="ticker-item"><span class="ticker-dot"></span> Home Loan</div>
+    <div class="ticker-item"><span class="ticker-dot"></span> Auto Loan</div>
+    <div class="ticker-item"><span class="ticker-dot"></span> Loan Against Property</div>
+    <div class="ticker-item"><span class="ticker-dot"></span> Overdraft Facility</div>
+    <div class="ticker-item"><span class="ticker-dot"></span> Fast Approval</div>
+    <div class="ticker-item"><span class="ticker-dot"></span> Low Interest Rates</div>
+    <div class="ticker-item"><span class="ticker-dot"></span> Pan India Service</div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section class="services section-pad" id="services">
+  <div class="section-header reveal">
+    <div class="section-tag">✦ What We Offer</div>
+    <h2 class="section-title">Our <em>Loan</em> Services</h2>
+    <p class="section-desc">Comprehensive financial solutions tailored to every life stage and business need.</p>
+  </div>
+  <div class="services-grid reveal">
+    <div class="service-card">
+      <div class="service-icon">💰</div>
+      <div class="service-tag">Quick & Easy</div>
+      <div class="service-name">Personal Loan</div>
+      <p class="service-desc">Funds for any personal need — medical, wedding, travel, education, or emergencies. No collateral required.</p>
+      <ul class="service-features">
+        <li>Up to ₹50 Lakh</li>
+        <li>Approval in 24–48 Hours</li>
+        <li>No Collateral Needed</li>
+        <li>Flexible Repayment Tenure</li>
+      </ul>
+      <div class="service-arrow">→</div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🏠</div>
+      <div class="service-tag">Dream Home</div>
+      <div class="service-name">Home Loan</div>
+      <p class="service-desc">Turn your dream home into reality with the lowest interest rates and minimal documentation hassle.</p>
+      <ul class="service-features">
+        <li>Lowest Market Interest Rates</li>
+        <li>Long Tenure Options</li>
+        <li>New & Resale Property</li>
+        <li>Balance Transfer Available</li>
+      </ul>
+      <div class="service-arrow">→</div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🚗</div>
+      <div class="service-tag">Drive Your Dream</div>
+      <div class="service-name">Auto Loan</div>
+      <p class="service-desc">Finance your dream vehicle — new or used — with competitive rates and fast on-road approvals.</p>
+      <ul class="service-features">
+        <li>New & Used Vehicles</li>
+        <li>All Car Brands Covered</li>
+        <li>Up to 90% Financing</li>
+        <li>Fast On-Road Approval</li>
+      </ul>
+      <div class="service-arrow">→</div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🏦</div>
+      <div class="service-tag">Property Power</div>
+      <div class="service-name">LAP</div>
+      <p class="service-desc">Unlock the hidden value in your property. Loan Against Property for business or personal needs at lower rates.</p>
+      <ul class="service-features">
+        <li>Residential & Commercial</li>
+        <li>Higher Loan Amount</li>
+        <li>Lower Interest vs Personal</li>
+        <li>Extended Repayment Period</li>
+      </ul>
+      <div class="service-arrow">→</div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">📊</div>
+      <div class="service-tag">Business Cashflow</div>
+      <div class="service-name">Overdraft (OD)</div>
+      <p class="service-desc">A flexible credit line for businesses — withdraw what you need, pay interest only on what you use.</p>
+      <ul class="service-features">
+        <li>Interest Only on Usage</li>
+        <li>Anytime Withdrawal</li>
+        <li>No Fixed EMI Pressure</li>
+        <li>Perfect for Business Owners</li>
+      </ul>
+      <div class="service-arrow">→</div>
+    </div>
+    <div class="service-card" style="background: linear-gradient(135deg, rgba(201,168,76,0.1), rgba(201,168,76,0.04)); display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; gap:1.5rem;">
+      <div style="font-family:'Cormorant Garamond',serif; font-size:2.5rem; font-weight:300; line-height:1.2;">Not Sure Which<br><em style="color:var(--gold);">Loan Fits You?</em></div>
+      <p style="font-size:0.88rem; color:var(--gray); line-height:1.7; font-weight:300;">Talk to our experts — free consultation, zero obligation.</p>
+      <a href="#contact" class="btn-primary" style="font-size:0.82rem; padding:14px 28px;">Free Consultation →</a>
+    </div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section class="why-us section-pad" id="why-us">
+  <div class="why-grid">
+    <div class="why-left reveal-left">
+      <div class="section-header" style="text-align:left; margin-bottom:3rem;">
+        <div class="section-tag">✦ Why Choose Us</div>
+        <h2 class="section-title">The Best<br><em>Deal</em> Always</h2>
+        <p class="section-desc" style="margin:0; text-align:left;">We don't just process loans — we find the best possible deal for every single client.</p>
+      </div>
+      <div class="why-list">
+        <div class="why-item">
+          <div class="why-num">01</div>
+          <div class="why-text">
+            <h4>All Banks & NBFCs Covered</h4>
+            <p>We compare across 20+ lenders to get you the lowest rate possible — you don't have to run around.</p>
+          </div>
+        </div>
+        <div class="why-item">
+          <div class="why-num">02</div>
+          <div class="why-text">
+            <h4>Doorstep Service</h4>
+            <p>Our team comes to you. Document collection, processing — everything handled at your convenience.</p>
+          </div>
+        </div>
+        <div class="why-item">
+          <div class="why-num">03</div>
+          <div class="why-text">
+            <h4>Zero Hidden Charges</h4>
+            <p>Complete transparency in every step. What we quote is what you pay — no surprises.</p>
+          </div>
+        </div>
+        <div class="why-item">
+          <div class="why-num">04</div>
+          <div class="why-text">
+            <h4>Expert Loan Advisors</h4>
+            <p>Sabir Shahzad and team with years of finance expertise guide you through every decision.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="why-right reveal-right">
+      <div class="why-card-stack">
+        <div class="why-card-back"></div>
+        <div class="why-card-main">
+          <div class="why-card-logo">Best Deal Finance</div>
+          <div>
+            <div class="why-big-num">₹50L</div>
+            <div class="why-card-label">Maximum Personal Loan Amount</div>
+          </div>
+          <div class="why-card-bottom">
+            <div class="why-card-row">
+              <span>Approval Time</span>
+              <span>24–48 Hours</span>
+            </div>
+            <div class="why-card-row">
+              <span>Interest Rate</span>
+              <span>Starts 9.5% p.a.</span>
+            </div>
+            <div class="why-card-row">
+              <span>Consultation</span>
+              <span>100% Free</span>
+            </div>
+            <div class="why-card-row">
+              <span>Contact</span>
+              <span>+91 87963 60803</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="process section-pad" id="process">
+  <div class="section-header reveal">
+    <div class="section-tag">✦ How It Works</div>
+    <h2 class="section-title">Simple <em>4-Step</em> Process</h2>
+    <p class="section-desc">From inquiry to disbursement — we make it effortless.</p>
+  </div>
+  <div class="process-steps reveal">
+    <div class="process-step">
+      <div class="step-num">01</div>
+      <div class="step-title">Free Consultation</div>
+      <p class="step-desc">Call or DM us. Our advisor understands your need and recommends the best loan option.</p>
+    </div>
+    <div class="process-step">
+      <div class="step-num">02</div>
+      <div class="step-title">Document Collection</div>
+      <p class="step-desc">Minimal documents. Our team collects from your doorstep or guides online submission.</p>
+    </div>
+    <div class="process-step">
+      <div class="step-num">03</div>
+      <div class="step-title">Best Rate Match</div>
+      <p class="step-desc">We compare across banks & NBFCs to find the lowest rate that matches your profile.</p>
+    </div>
+    <div class="process-step">
+      <div class="step-num">04</div>
+      <div class="step-title">Loan Disbursed!</div>
+      <p class="step-desc">Approval in 24–48 hours. Funds directly in your account. Simple as that!</p>
+    </div>
+  </div>
+</section>
+
+<!-- ELIGIBILITY -->
+<section class="eligibility section-pad" id="eligibility">
+  <div class="section-header reveal">
+    <div class="section-tag">✦ Eligibility</div>
+    <h2 class="section-title">Who Can <em>Apply?</em></h2>
+    <p class="section-desc">Basic requirements to get started — we handle the complexity for you.</p>
+  </div>
+  <div class="elig-grid reveal">
+    <div class="elig-card">
+      <div class="elig-icon">🎂</div>
+      <div class="elig-title">Age</div>
+      <div class="elig-val">21–65 Yrs</div>
+    </div>
+    <div class="elig-card">
+      <div class="elig-icon">💼</div>
+      <div class="elig-title">Employment</div>
+      <div class="elig-val">Salaried / Self</div>
+    </div>
+    <div class="elig-card">
+      <div class="elig-icon">💳</div>
+      <div class="elig-title">CIBIL Score</div>
+      <div class="elig-val">650+</div>
+    </div>
+    <div class="elig-card">
+      <div class="elig-icon">💰</div>
+      <div class="elig-title">Min Income</div>
+      <div class="elig-val">₹15,000/mo</div>
+    </div>
+    <div class="elig-card">
+      <div class="elig-icon">📄</div>
+      <div class="elig-title">Documents</div>
+      <div class="elig-val">Aadhaar + PAN</div>
+    </div>
+  </div>
+  <div style="text-align:center; margin-top:3rem;" class="reveal">
+    <p style="color:var(--gray); font-size:0.88rem; margin-bottom:1.5rem;">Don't meet all criteria? Talk to us anyway — we often find solutions!</p>
+    <a href="https://wa.me/918796360803" class="btn-primary" target="_blank">Check Eligibility Free →</a>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact section-pad" id="contact">
+  <div class="section-header reveal">
+    <div class="section-tag">✦ Get In Touch</div>
+    <h2 class="section-title">Start Your <em>Loan</em> Journey</h2>
+    <p class="section-desc">Free consultation. Zero obligation. Best deal guaranteed.</p>
+  </div>
+  <div class="contact-grid">
+    <div class="contact-info reveal-left">
+      <h3>Talk to <em>Sabir Shahzad</em><br>— Your Loan Expert</h3>
+      <p>With years of experience in finance and lending, Sabir personally handles every case to ensure you get the best possible deal. Reach out any time.</p>
+      <div class="contact-details">
+        <div class="contact-item">
+          <div class="contact-icon">📞</div>
+          <div class="contact-item-text">
+            <small>Call / WhatsApp</small>
+            <strong>+91 87963 60803</strong>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">📧</div>
+          <div class="contact-item-text">
+            <small>Email</small>
+            <strong>sabir.bestdealfinance@gmail.com</strong>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">⏰</div>
+          <div class="contact-item-text">
+            <small>Working Hours</small>
+            <strong>Mon – Sat, 9 AM to 7 PM</strong>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">🌍</div>
+          <div class="contact-item-text">
+            <small>Service Area</small>
+            <strong>Pan India</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="contact-form reveal-right">
+      <div class="form-title">Get Free Loan Quote</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Full Name *</label>
+          <input type="text" id="f-name" placeholder="Your Name" required>
+        </div>
+        <div class="form-group">
+          <label>Phone Number *</label>
+          <input type="tel" id="f-phone" placeholder="+91 XXXXX XXXXX" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="f-email" placeholder="your@email.com">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Loan Type *</label>
+          <select id="f-loan">
+            <option>Personal Loan</option>
+            <option>Home Loan</option>
+            <option>Auto Loan</option>
+            <option>LAP</option>
+            <option>Overdraft (OD)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Loan Amount Required</label>
+          <input type="text" id="f-amount" placeholder="e.g. ₹5,00,000">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Message (Optional)</label>
+        <textarea id="f-msg" placeholder="Tell us briefly about your requirement..."></textarea>
+      </div>
+      <button class="form-submit" onclick="submitForm()">Submit & Get Free Consultation →</button>
+      <p style="text-align:center; font-size:0.75rem; color:var(--gray); margin-top:1rem;">
+        🔒 Your details are safe. We never share your information.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand-name">Best<span>Deal</span> Finance</div>
+      <p class="footer-tagline">Your trusted financial partner for loans, investments, and a better future. Best Deal. Better Future.</p>
+      <div class="gold-divider"><span class="gold-divider-gem">◆</span></div>
+      <p style="font-size:0.78rem; color:var(--gray); font-weight:300;">Sabir Shahzad — Loan Advisor<br>+91 87963 60803</p>
+    </div>
+    <div class="footer-col">
+      <h5>Our Services</h5>
+      <ul class="footer-links">
+        <li><a href="#services">Personal Loan</a></li>
+        <li><a href="#services">Home Loan</a></li>
+        <li><a href="#services">Auto Loan</a></li>
+        <li><a href="#services">Loan Against Property</a></li>
+        <li><a href="#services">Overdraft Facility</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Quick Links</h5>
+      <ul class="footer-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#why-us">Why Best Deal</a></li>
+        <li><a href="#process">How It Works</a></li>
+        <li><a href="#eligibility">Eligibility</a></li>
+        <li><a href="#contact">Contact Us</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2025 <span>Best Deal Finance</span>. All Rights Reserved. | Sabir Shahzad</div>
+    <div class="footer-copy" style="color:var(--gray);">Best Deal. Better Future. 💛</div>
+  </div>
+</footer>
+
+<script>
+  // Custom Cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx - 6 + 'px';
+    cursor.style.top = my - 6 + 'px';
+  });
+  function animRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx - 18 + 'px';
+    ring.style.top = ry - 18 + 'px';
+    requestAnimationFrame(animRing);
+  }
+  animRing();
+  document.querySelectorAll('a, button, .service-card, .why-item').forEach(el => {
+    el.addEventListener('mouseenter', () => { cursor.style.transform = 'scale(2)'; ring.style.transform = 'scale(1.5)'; });
+    el.addEventListener('mouseleave', () => { cursor.style.transform = 'scale(1)'; ring.style.transform = 'scale(1)'; });
+  });
+
+  // Particles
+  const pContainer = document.getElementById('particles');
+  for (let i = 0; i < 25; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + 'vw';
+    p.style.width = p.style.height = (Math.random() * 3 + 1) + 'px';
+    p.style.animationDuration = (Math.random() * 15 + 10) + 's';
+    p.style.animationDelay = (Math.random() * 10) + 's';
+    pContainer.appendChild(p);
+  }
+
+  // Nav scroll
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+  });
+
+  // Hamburger
+  document.getElementById('hamburger').addEventListener('click', () => {
+    document.getElementById('mobileMenu').classList.toggle('open');
+  });
+  function closeMobile() {
+    document.getElementById('mobileMenu').classList.remove('open');
+  }
+
+  // Scroll Reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => observer.observe(el));
+
+  // Counter animation
+  const counters = document.querySelectorAll('[data-count]');
+  const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const target = parseInt(e.target.dataset.count);
+        let current = 0;
+        const step = target / 60;
+        const timer = setInterval(() => {
+          current += step;
+          if (current >= target) { current = target; clearInterval(timer); }
+          e.target.textContent = Math.floor(current) + (target >= 1000 ? '+' : '');
+        }, 20);
+        counterObserver.unobserve(e.target);
+      }
+    });
+  });
+  counters.forEach(c => counterObserver.observe(c));
+
+  // Form Submit — WhatsApp + Formspree Dual Notification
+  function submitForm() {
+    const name    = document.getElementById('f-name').value.trim();
+    const phone   = document.getElementById('f-phone').value.trim();
+    const email   = document.getElementById('f-email').value.trim();
+    const loan    = document.getElementById('f-loan').value;
+    const amount  = document.getElementById('f-amount').value.trim();
+    const msg     = document.getElementById('f-msg').value.trim();
+
+    if (!name || !phone) {
+      alert('⚠️ Please enter your Name and Phone Number!');
+      return;
+    }
+
+    const btn = document.querySelector('.form-submit');
+    btn.textContent = '⏳ Sending...';
+    btn.disabled = true;
+
+    // ── 1. FORMSPREE — Email to Gmail ──────────────────────
+    const FORMSPREE_URL = 'https://formspree.io/f/xrejyqkz';
+
+    fetch(FORMSPREE_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        name, phone, email,
+        loan_type: loan,
+        loan_amount: amount,
+        message: msg,
+        _subject: `🔔 New Loan Enquiry from ${name} — Best Deal Finance`
+      })
+    }).then(r => r.ok ? console.log('✅ Email sent') : console.log('⚠️ Formspree error'))
+      .catch(() => console.log('⚠️ Network error'));
+
+    // ── 2. WHATSAPP — Instant message to Sabir ─────────────
+    const waText = encodeURIComponent(
+`🔔 *NEW LOAN ENQUIRY — Best Deal Finance*
+
+👤 *Name:* ${name}
+📞 *Phone:* ${phone}
+📧 *Email:* ${email || 'Not provided'}
+🏦 *Loan Type:* ${loan}
+💰 *Amount:* ${amount || 'Not specified'}
+💬 *Message:* ${msg || 'No message'}
+
+📅 Received on: ${new Date().toLocaleString('en-IN')}
+🌐 Source: Website Form`
+    );
+
+    setTimeout(() => {
+      // Open WhatsApp with lead details
+      window.open(`https://wa.me/918796360803?text=${waText}`, '_blank');
+
+      // Show success
+      btn.textContent = '✅ Sent! Redirecting to WhatsApp...';
+      btn.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
+      btn.disabled = false;
+
+      // Clear form
+      document.getElementById('f-name').value = '';
+      document.getElementById('f-phone').value = '';
+      document.getElementById('f-email').value = '';
+      document.getElementById('f-amount').value = '';
+      document.getElementById('f-msg').value = '';
+
+      setTimeout(() => {
+        btn.textContent = 'Submit & Get Free Consultation →';
+        btn.style.background = '';
+      }, 5000);
+    }, 800);
+  }
+</script>
+</body>
+</html>
