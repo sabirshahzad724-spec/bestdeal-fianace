@@ -894,7 +894,67 @@
   }
   .reveal-right.visible { opacity: 1; transform: translateX(0); }
 
-  /* RESPONSIVE */
+  /* Eligibility Modal */
+  #eligModal { display:none; }
+  #eligModal.open { display:flex !important; }
+  .edot {
+    width: 32px; height: 4px;
+    background: rgba(201,168,76,0.2);
+    border-radius: 4px;
+    transition: all 0.3s ease;
+  }
+  .edot.active {
+    background: var(--gold);
+    width: 48px;
+  }
+  .eopt {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 10px;
+    padding: 14px 18px;
+    color: #F8F6F0;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.92rem;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    font-weight: 400;
+  }
+  .eopt:hover {
+    background: rgba(201,168,76,0.1);
+    border-color: rgba(201,168,76,0.5);
+    transform: translateX(4px);
+  }
+  .eopt.selected {
+    background: rgba(201,168,76,0.15);
+    border-color: var(--gold);
+    color: var(--gold-light);
+    font-weight: 600;
+  }
+  .enxt {
+    width: 100%;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: var(--navy);
+    border: none;
+    padding: 14px;
+    border-radius: 10px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1.5rem;
+    letter-spacing: 0.06em;
+    transition: all 0.3s ease;
+    opacity: 1;
+  }
+  .enxt:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+  .enxt:not(:disabled):hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(201,168,76,0.3); }
+
   @media (max-width: 1024px) {
     .why-grid { grid-template-columns: 1fr; }
     .why-right { display: none; }
@@ -1263,9 +1323,127 @@
   </div>
   <div style="text-align:center; margin-top:3rem;" class="reveal">
     <p style="color:var(--gray); font-size:0.88rem; margin-bottom:1.5rem;">Don't meet all criteria? Talk to us anyway — we often find solutions!</p>
-    <a href="https://wa.me/918796360803" class="btn-primary" target="_blank">Check Eligibility Free →</a>
+    <button class="btn-primary" onclick="openEligModal()">Check Eligibility Free →</button>
   </div>
 </section>
+
+<!-- ELIGIBILITY MODAL -->
+<div id="eligModal" style="display:none; position:fixed; inset:0; z-index:9000; background:rgba(4,10,20,0.92); backdrop-filter:blur(8px); align-items:center; justify-content:center; padding:1rem;">
+  <div style="background:linear-gradient(145deg,#0D1E38,#0A1628); border:1px solid rgba(201,168,76,0.3); border-radius:20px; width:100%; max-width:520px; max-height:90vh; overflow-y:auto; padding:2.5rem; position:relative;">
+
+    <!-- Close -->
+    <button onclick="closeEligModal()" style="position:absolute; top:1.2rem; right:1.2rem; background:rgba(201,168,76,0.1); border:1px solid rgba(201,168,76,0.3); color:#E8C97A; width:36px; height:36px; border-radius:50%; font-size:1.1rem; cursor:pointer;">✕</button>
+
+    <!-- Step indicator -->
+    <div style="display:flex; gap:8px; margin-bottom:2rem;" id="stepDots">
+      <div class="edot active" id="d1"></div>
+      <div class="edot" id="d2"></div>
+      <div class="edot" id="d3"></div>
+      <div class="edot" id="d4"></div>
+      <div class="edot" id="d5"></div>
+    </div>
+
+    <div style="font-size:0.75rem; color:#C9A84C; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:0.5rem;" id="stepLabel">Step 1 of 5</div>
+
+    <!-- STEPS -->
+    <div id="eStep1">
+      <h3 style="font-family:'Cormorant Garamond',serif; font-size:1.8rem; font-weight:600; margin-bottom:0.5rem;">Select <span style="color:#C9A84C;">Loan Type</span></h3>
+      <p style="color:#8A96A8; font-size:0.88rem; margin-bottom:1.8rem;">Which loan are you looking for?</p>
+      <div style="display:flex; flex-direction:column; gap:0.8rem;" id="loanOptions">
+        <button class="eopt" onclick="selectOpt('eLoan','Personal Loan',this)">💰 Personal Loan</button>
+        <button class="eopt" onclick="selectOpt('eLoan','Home Loan',this)">🏠 Home Loan</button>
+        <button class="eopt" onclick="selectOpt('eLoan','Auto Loan',this)">🚗 Auto Loan</button>
+        <button class="eopt" onclick="selectOpt('eLoan','LAP (Loan Against Property)',this)">🏦 LAP — Loan Against Property</button>
+        <button class="eopt" onclick="selectOpt('eLoan','Overdraft (OD)',this)">📊 Overdraft (OD)</button>
+      </div>
+      <input type="hidden" id="eLoan">
+      <button class="enxt" onclick="eNext(2)" id="btn1" disabled>Continue →</button>
+    </div>
+
+    <div id="eStep2" style="display:none;">
+      <h3 style="font-family:'Cormorant Garamond',serif; font-size:1.8rem; font-weight:600; margin-bottom:0.5rem;">Employment <span style="color:#C9A84C;">Type</span></h3>
+      <p style="color:#8A96A8; font-size:0.88rem; margin-bottom:1.8rem;">What is your current employment status?</p>
+      <div style="display:flex; flex-direction:column; gap:0.8rem;">
+        <button class="eopt" onclick="selectOpt('eEmp','Salaried',this)">👔 Salaried — Working in a Company</button>
+        <button class="eopt" onclick="selectOpt('eEmp','Self Employed / Business Owner',this)">💼 Self Employed / Business Owner</button>
+        <button class="eopt" onclick="selectOpt('eEmp','Freelancer / Professional',this)">💻 Freelancer / Professional</button>
+        <button class="eopt" onclick="selectOpt('eEmp','Other',this)">🔄 Other</button>
+      </div>
+      <input type="hidden" id="eEmp">
+      <div style="display:flex; gap:1rem;">
+        <button class="enxt" onclick="eNext(1)" style="background:rgba(201,168,76,0.1); color:#E8C97A; flex:0.4;">← Back</button>
+        <button class="enxt" onclick="eNext(3)" id="btn2" disabled style="flex:1;">Continue →</button>
+      </div>
+    </div>
+
+    <div id="eStep3" style="display:none;">
+      <h3 style="font-family:'Cormorant Garamond',serif; font-size:1.8rem; font-weight:600; margin-bottom:0.5rem;">Monthly <span style="color:#C9A84C;">Income</span></h3>
+      <p style="color:#8A96A8; font-size:0.88rem; margin-bottom:1.8rem;">What is your approximate monthly income?</p>
+      <div style="display:flex; flex-direction:column; gap:0.8rem;">
+        <button class="eopt" onclick="selectOpt('eIncome','Below ₹15,000',this)">Below ₹15,000</button>
+        <button class="eopt" onclick="selectOpt('eIncome','₹15,000 – ₹30,000',this)">₹15,000 – ₹30,000</button>
+        <button class="eopt" onclick="selectOpt('eIncome','₹30,000 – ₹60,000',this)">₹30,000 – ₹60,000</button>
+        <button class="eopt" onclick="selectOpt('eIncome','₹60,000 – ₹1 Lakh',this)">₹60,000 – ₹1 Lakh</button>
+        <button class="eopt" onclick="selectOpt('eIncome','Above ₹1 Lakh',this)">Above ₹1 Lakh</button>
+      </div>
+      <input type="hidden" id="eIncome">
+      <div style="display:flex; gap:1rem;">
+        <button class="enxt" onclick="eNext(2)" style="background:rgba(201,168,76,0.1); color:#E8C97A; flex:0.4;">← Back</button>
+        <button class="enxt" onclick="eNext(4)" id="btn3" disabled style="flex:1;">Continue →</button>
+      </div>
+    </div>
+
+    <div id="eStep4" style="display:none;">
+      <h3 style="font-family:'Cormorant Garamond',serif; font-size:1.8rem; font-weight:600; margin-bottom:0.5rem;">CIBIL <span style="color:#C9A84C;">Score</span></h3>
+      <p style="color:#8A96A8; font-size:0.88rem; margin-bottom:1.8rem;">What is your approximate CIBIL credit score?</p>
+      <div style="display:flex; flex-direction:column; gap:0.8rem;">
+        <button class="eopt" onclick="selectOpt('eCibil','Below 600 (Low)',this)">😟 Below 600 — Low / Not Sure</button>
+        <button class="eopt" onclick="selectOpt('eCibil','600 – 650',this)">😐 600 – 650 — Average</button>
+        <button class="eopt" onclick="selectOpt('eCibil','650 – 750',this)">🙂 650 – 750 — Good</button>
+        <button class="eopt" onclick="selectOpt('eCibil','750 – 900',this)">😄 750 – 900 — Excellent</button>
+        <button class="eopt" onclick="selectOpt('eCibil','Not Sure',this)">🤷 I Don't Know My Score</button>
+      </div>
+      <input type="hidden" id="eCibil">
+      <div style="display:flex; gap:1rem;">
+        <button class="enxt" onclick="eNext(3)" style="background:rgba(201,168,76,0.1); color:#E8C97A; flex:0.4;">← Back</button>
+        <button class="enxt" onclick="eNext(5)" id="btn4" disabled style="flex:1;">Continue →</button>
+      </div>
+    </div>
+
+    <div id="eStep5" style="display:none;">
+      <h3 style="font-family:'Cormorant Garamond',serif; font-size:1.8rem; font-weight:600; margin-bottom:0.5rem;">Your <span style="color:#C9A84C;">Details</span></h3>
+      <p style="color:#8A96A8; font-size:0.88rem; margin-bottom:1.8rem;">Enter your details to receive your eligibility result.</p>
+      <div style="display:flex; flex-direction:column; gap:1rem;">
+        <div>
+          <label style="font-size:0.72rem; color:#8A96A8; letter-spacing:0.1em; text-transform:uppercase; display:block; margin-bottom:0.4rem;">Full Name *</label>
+          <input id="eName" type="text" placeholder="Your full name" style="width:100%; background:rgba(255,255,255,0.05); border:1px solid rgba(201,168,76,0.25); border-radius:8px; padding:12px 16px; color:#F8F6F0; font-family:'Outfit',sans-serif; font-size:0.9rem; outline:none;">
+        </div>
+        <div>
+          <label style="font-size:0.72rem; color:#8A96A8; letter-spacing:0.1em; text-transform:uppercase; display:block; margin-bottom:0.4rem;">Phone Number *</label>
+          <input id="ePhone" type="tel" placeholder="+91 XXXXX XXXXX" style="width:100%; background:rgba(255,255,255,0.05); border:1px solid rgba(201,168,76,0.25); border-radius:8px; padding:12px 16px; color:#F8F6F0; font-family:'Outfit',sans-serif; font-size:0.9rem; outline:none;">
+        </div>
+        <div>
+          <label style="font-size:0.72rem; color:#8A96A8; letter-spacing:0.1em; text-transform:uppercase; display:block; margin-bottom:0.4rem;">Loan Amount Required</label>
+          <input id="eAmt" type="text" placeholder="e.g. ₹5,00,000" style="width:100%; background:rgba(255,255,255,0.05); border:1px solid rgba(201,168,76,0.25); border-radius:8px; padding:12px 16px; color:#F8F6F0; font-family:'Outfit',sans-serif; font-size:0.9rem; outline:none;">
+        </div>
+      </div>
+      <div style="display:flex; gap:1rem; margin-top:1.5rem;">
+        <button class="enxt" onclick="eNext(4)" style="background:rgba(201,168,76,0.1); color:#E8C97A; flex:0.4;">← Back</button>
+        <button class="enxt" onclick="submitElig()" style="flex:1; background:linear-gradient(135deg,#C9A84C,#E8C97A); color:#0A1628;">✅ Check My Eligibility →</button>
+      </div>
+    </div>
+
+    <!-- RESULT -->
+    <div id="eResult" style="display:none; text-align:center;">
+      <div id="eResultIcon" style="font-size:4rem; margin-bottom:1rem;"></div>
+      <h3 id="eResultTitle" style="font-family:'Cormorant Garamond',serif; font-size:2rem; font-weight:700; margin-bottom:1rem;"></h3>
+      <p id="eResultMsg" style="color:#8A96A8; font-size:0.92rem; line-height:1.8; margin-bottom:2rem;"></p>
+      <button id="eWaBtn" onclick="sendToWhatsApp()" style="width:100%; background:#25D366; color:white; border:none; padding:16px; border-radius:10px; font-family:'Outfit',sans-serif; font-size:0.95rem; font-weight:700; cursor:pointer; letter-spacing:0.05em;">💬 Send Result on WhatsApp →</button>
+      <button onclick="closeEligModal()" style="width:100%; background:transparent; border:1px solid rgba(201,168,76,0.3); color:#E8C97A; padding:12px; border-radius:10px; font-family:'Outfit',sans-serif; font-size:0.88rem; cursor:pointer; margin-top:0.8rem;">I'll do this later</button>
+    </div>
+
+  </div>
+</div>
 
 <!-- CONTACT -->
 <section class="contact section-pad" id="contact">
@@ -1390,7 +1568,114 @@
 </footer>
 
 <script>
-  // Custom Cursor
+  // ── ELIGIBILITY MODAL ──────────────────────────────────
+  function openEligModal() {
+    document.getElementById('eligModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeEligModal() {
+    document.getElementById('eligModal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  // Close on backdrop click
+  document.getElementById('eligModal').addEventListener('click', function(e) {
+    if (e.target === this) closeEligModal();
+  });
+
+  let eData = {};
+
+  function selectOpt(field, value, btn) {
+    eData[field] = value;
+    // Highlight selected
+    btn.closest('div').querySelectorAll('.eopt').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    // Enable next button
+    const map = { eLoan:'btn1', eEmp:'btn2', eIncome:'btn3', eCibil:'btn4' };
+    if (map[field]) {
+      document.getElementById(map[field]).disabled = false;
+    }
+  }
+
+  function eNext(step) {
+    // Hide all steps
+    [1,2,3,4,5].forEach(i => {
+      document.getElementById('eStep'+i).style.display = 'none';
+      document.getElementById('d'+i).classList.remove('active');
+    });
+    // Show result if step 0 (result screen)
+    document.getElementById('eResult').style.display = 'none';
+
+    if (step >= 1 && step <= 5) {
+      document.getElementById('eStep'+step).style.display = 'block';
+      document.getElementById('d'+step).classList.add('active');
+      document.getElementById('stepLabel').textContent = `Step ${step} of 5`;
+    }
+  }
+
+  function submitElig() {
+    const name  = document.getElementById('eName').value.trim();
+    const phone = document.getElementById('ePhone').value.trim();
+    const amt   = document.getElementById('eAmt').value.trim();
+
+    if (!name || !phone) {
+      alert('⚠️ Naam aur Phone Number zaroori hai!');
+      return;
+    }
+
+    eData.name  = name;
+    eData.phone = phone;
+    eData.amt   = amt || 'Not specified';
+
+    // Calculate eligibility
+    const income = eData.eIncome || '';
+    const cibil  = eData.eCibil  || '';
+
+    let eligible = true;
+    let resultTitle, resultMsg, resultIcon;
+
+    if (income === 'Below ₹15,000' || cibil === 'Below 600 (Low)') {
+      eligible = false;
+    }
+
+    if (eligible) {
+      resultIcon  = '🎉';
+      resultTitle = 'Aap Eligible Hain!';
+      resultMsg   = `${name} ji, aapka profile dekhkar lag raha hai ki aapko loan mil sakta hai! Hamari team aapko best deal dhoondh ke degi. Abhi WhatsApp pe result bhejo aur free consultation lo!`;
+    } else {
+      resultIcon  = '💡';
+      resultTitle = 'Humse Baat Karo!';
+      resultMsg   = `${name} ji, kuch criteria match nahi kiya — par ghabrao mat! Hamari team ne kai mushkil cases mein bhi loan dilaya hai. Ek baar baat karo — hum zaroor koi raasta nikalenge!`;
+    }
+
+    // Show result
+    [1,2,3,4,5].forEach(i => document.getElementById('eStep'+i).style.display = 'none');
+    document.getElementById('stepLabel').textContent = '✅ Result Ready!';
+    document.getElementById('eResult').style.display = 'block';
+    document.getElementById('eResultIcon').textContent = resultIcon;
+    document.getElementById('eResultTitle').textContent = resultTitle;
+    document.getElementById('eResultMsg').textContent = resultMsg;
+    document.getElementById('eResultTitle').style.color = eligible ? '#C9A84C' : '#E8C97A';
+  }
+
+  function sendToWhatsApp() {
+    const waMsg = encodeURIComponent(
+`🔍 *ELIGIBILITY CHECK — Best Deal Finance*
+
+👤 *Name:* ${eData.name}
+📞 *Phone:* ${eData.phone}
+🏦 *Loan Type:* ${eData.eLoan || 'N/A'}
+💼 *Employment:* ${eData.eEmp || 'N/A'}
+💰 *Monthly Income:* ${eData.eIncome || 'N/A'}
+📊 *CIBIL Score:* ${eData.eCibil || 'N/A'}
+💵 *Loan Amount:* ${eData.amt}
+
+📅 Date: ${new Date().toLocaleString('en-IN')}
+🌐 Source: Website Eligibility Checker`
+    );
+    window.open(`https://wa.me/918796360803?text=${waMsg}`, '_blank');
+    closeEligModal();
+  }
+
   const cursor = document.getElementById('cursor');
   const ring = document.getElementById('cursorRing');
   let mx = 0, my = 0, rx = 0, ry = 0;
